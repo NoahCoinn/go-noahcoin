@@ -1,8 +1,8 @@
 This is the Go implementation of the Noahcoin protocol. It's far from being finished.
 
-`go get https://github.com/noahcoinn/noahcoin`
+    go get https://github.com/noahcoinn/go-noahcoin
 
-The Python reference implementation can be found at https://github.com/vbuterin/pynoahcoin
+The Python reference implementation can be found at https://github.com/noahcoinn/pynoahcoin
 
 More information about the protocol:
 * http://vitalik.ca/noahcoin.html
