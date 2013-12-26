@@ -1,0 +1,14 @@
+This is the Go implementation of the Noahcoin protocol. It's for from being finished.
+
+The Python reference implementation can be found at https://github.com/vbuterin/pynoahcoin
+
+More information about the protocol:
+* http://vitalik.ca/noahcoin.html
+* http://vitalik.ca/noahcoin/spec.html
+* http://vitalik.ca/noahcoin/patricia.html
+* http://vitalik.ca/noahcoin/dagger.html
+* http://vitalik.ca/noahcoin/rlp.html
+
+# TODO
+
+Fix this todo file!
