@@ -61,9 +61,7 @@ type TxCallback func(opType OpType) bool
 
 type Vm struct {
 	// Memory stack
-	stack map[string]string
-	// Index ptr
-	iptr   int
+	stack  map[string]string
 	memory map[string]map[string]string
 }
 
@@ -73,7 +71,10 @@ func NewVm() *Vm {
 	stackSize := uint(256)
 	fmt.Println("stack size =", stackSize)
 
-	return &Vm{make(map[string]string), 0, make(map[string]map[string]string)}
+	return &Vm{
+		stack:  make(map[string]string),
+		memory: make(map[string]map[string]string),
+	}
 }
 
 func (vm *Vm) RunTransaction(tx *Transaction, cb TxCallback) {
@@ -86,6 +87,8 @@ func (vm *Vm) RunTransaction(tx *Transaction, cb TxCallback) {
 	vm.stack["0"] = tx.sender
 	vm.stack["1"] = "100"  //int(tx.value)
 	vm.stack["1"] = "1000" //int(tx.fee)
+	// Stack pointer
+	stPtr := 0
 
 	//vm.memory[tx.addr] = make([]int, 256)
 	vm.memory[tx.addr] = make(map[string]string)
@@ -97,13 +100,13 @@ func (vm *Vm) RunTransaction(tx *Transaction, cb TxCallback) {
 	y := 1
 	z := 2 //a := 3; b := 4; c := 5
 out:
-	for vm.iptr < len(tx.data) {
+	for stPtr < len(tx.data) {
 		// The base big int for all calculations. Use this for any results.
 		base := new(big.Int)
 		// XXX Should Instr return big int slice instead of string slice?
-		op, args, _ := Instr(tx.data[vm.iptr])
+		op, args, _ := Instr(tx.data[stPtr])
 
-		fmt.Printf("%-3d %d %v\n", vm.iptr, op, args)
+		fmt.Printf("%-3d %d %v\n", stPtr, op, args)
 
 		opType := OpType(tNorm)
 		// Determine the op type (used for calculating fees by the block manager)
@@ -119,7 +122,7 @@ out:
 			break out
 		}
 
-		nptr := vm.iptr
+		nptr := stPtr
 		switch op {
 		case oSTOP:
 			fmt.Println("exiting (oSTOP), idx =", nptr)
@@ -177,10 +180,10 @@ out:
 			break
 		}
 
-		if vm.iptr == nptr {
-			vm.iptr++
+		if stPtr == nptr {
+			stPtr++
 		} else {
-			vm.iptr = nptr
+			stPtr = nptr
 			fmt.Println("... JMP", nptr, "...")
 		}
 	}
